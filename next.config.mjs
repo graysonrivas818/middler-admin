@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack(config, { dev }) {
+    if (dev) {
+      config.cache = false;
+      config.parallelism = 1;
+    }
+    return config;
+  },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.

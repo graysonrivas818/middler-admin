@@ -12,7 +12,10 @@ import {
   NextSSRApolloClient,
 } from "@apollo/experimental-nextjs-app-support/ssr";
 
-const GRAPHQL_ENDPOINT = "https://api.middler.com/graphql";
+const GRAPHQL_ENDPOINT =
+  process.env.NODE_ENV === "development"
+    ? process.env.NEXT_PUBLIC_GRAPHQL_DEVELOPMENT_ENDPOINT || "http://localhost:3001/graphql"
+    : process.env.NEXT_PUBLIC_GRAPHQL_PRODUCTION_ENDPOINT || "https://api.middler.com/graphql";
 
 function makeClient() {
   const httpLink = new HttpLink({
@@ -37,7 +40,6 @@ function makeClient() {
   return new NextSSRApolloClient({
     ssrMode: typeof window === 'undefined',
     cache: new NextSSRInMemoryCache({
-      addTypename: false,
       include: 'active'
     }),
     dataIdFromObject: o => o.id,

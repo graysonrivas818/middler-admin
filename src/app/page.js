@@ -7,6 +7,7 @@ import { useMutation, useQuery } from '@apollo/client'
 
 ///// COMPONENTS
 import Nav from '@/app/_components/nav'
+import ChangePasswordModal from '@/app/_components/ChangePasswordModal'
 import Users from '@/app/_components/users'
 import PaintCard from '@/app/_components/modals/paintCard'
 import UserClients from '@/app/_components/modals/userClients'
@@ -31,8 +32,9 @@ export default function Home() {
   const dispatch                                      = useDispatch()
   const router                                        = useRouter()
   const [loadingData, setLoadingData]                 = useState(false)
+  const [showChangePassword, setShowChangePassword]   = useState(false)
   const [user, setUser]                               = useState('')
-  const [view, setView]                               = useState('')
+  const [view, setView]                               = useState('estimates')
   const [popup, setPopup]                             = useState('')
   const [edit, setEdit]                               = useState('')
   const [editUser, setEditUser]                       = useState('')
@@ -63,16 +65,14 @@ export default function Home() {
     if(!dataUser.error) setLoadingData(false)
     
     if(dataUser.data && dataUser.data.admin){ 
-
       setUser(dataUser.data.admin)
       dispatch(login())
-
+      setView('estimates');
       if(Object.keys(dataUser.data.admin)){
         Object.keys(dataUser.data.admin).map(( item ) => 
           dispatch(changeUserValue({ value: dataUser.data.admin[item], type: item }))
         )
       }
-      
     }
    
   }, [dataUser])
@@ -109,7 +109,11 @@ export default function Home() {
         logout={logout}
         resetUser={resetUser}
         router={router}
+        onChangePassword={() => setShowChangePassword(true)}
       />
+      {showChangePassword && (
+        <ChangePasswordModal userId={user?.id} onClose={() => setShowChangePassword(false)} />
+      )}
 
       {/* Main content */}
       {view == 'dashboard' &&

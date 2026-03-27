@@ -5,11 +5,11 @@ const Nav = ({
   dispatch,
   logout,
   resetUser,
-  router
+  router,
+  onChangePassword
 }) => {
-  
-  const [isMobileMenuOpen, setMobileMenuOpen]         = useState(false)
-  
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showProfileMenu, setShowProfileMenu] = useState(false)
   return (
     <nav className="bg-white dark:bg-gray-800 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,6 +60,7 @@ const Nav = ({
               <button
                 type="button"
                 className="bg-white dark:bg-gray-800 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                onClick={() => setShowProfileMenu((v) => !v)}
               >
                 <span className="sr-only">Open user menu</span>
                 <img
@@ -68,6 +69,19 @@ const Nav = ({
                   alt=""
                 />
               </button>
+              {showProfileMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50">
+                  <button
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      if (onChangePassword) onChangePassword();
+                    }}
+                  >
+                    Change Password
+                  </button>
+                </div>
+              )}
             </div>
             {/* Mobile menu button */}
             <div className="-mr-2 flex items-center sm:hidden">

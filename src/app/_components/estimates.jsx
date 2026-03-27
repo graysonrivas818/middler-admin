@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { convertIsoStringToDate } from '@/app/_helpers/main';
 import SVG from '@/app/_libs/svg';
 import EstimatesDashboard from '@/app/_components/estimateDashboard';
+import { useMutation } from '@apollo/client';
+import { useCookies } from 'react-cookie';
+import RESET_ALL_ESTIMATES from '@/app/_mutations/resetAllEstimates';
 
 const headerKeyMap = [
   { label: '#', key: 'index', width: 'min-w-[50px]' },
@@ -50,6 +53,21 @@ const Estimates = ({ estimates = [], dispatch, changeView, changePopup, isDarkMo
   const [isDescending, setIsDescending] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const estimatesPerPage = 50;
+  const [resetAllEstimates, { loading: resetting, error: resetError }] = useMutation(RESET_ALL_ESTIMATES);
+  const [cookies] = useCookies(['token']);
+  const [resetMessage, setResetMessage] = useState('');
+
+  const handleResetEstimates = async () => {
+    setResetMessage('');
+    try {
+      const { data } = await resetAllEstimates({ variables: { token: cookies.token || '' } });
+      setAllEstimates([]);
+      setCurrentPage(1);
+      setResetMessage(data.resetAllEstimates.message || 'All estimates have been reset.');
+    } catch (err) {
+      setResetMessage(err.message || 'Failed to reset estimates.');
+    }
+  };
 
   useEffect(() => {
     if (estimates.length > 0) {
@@ -97,12 +115,25 @@ const Estimates = ({ estimates = [], dispatch, changeView, changePopup, isDarkMo
           <h5>Back</h5>
         </div>
 
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <h1 className="text-2xl font-semibold text-black dark:text-white">Estimates</h1>
-          <button onClick={() => setIsDescending(!isDescending)} className="bg-color-1 px-4 py-2 text-white rounded-lg">
-            {isDescending ? 'Sort: Oldest to Newest' : 'Sort: Newest to Oldest'}
-          </button>
+          <div className="flex gap-2">
+            <button onClick={() => setIsDescending(!isDescending)} className="bg-color-1 px-4 py-2 text-white rounded-lg">
+              {isDescending ? 'Sort: Oldest to Newest' : 'Sort: Newest to Oldest'}
+            </button>
+            <button
+              onClick={handleResetEstimates}
+              className="bg-red-600 hover:bg-red-700 px-4 py-2 text-white rounded-lg transition"
+              disabled={resetting}
+              title="Delete all estimates permanently"
+            >
+              {resetting ? 'Resetting...' : 'Reset All Estimates'}
+            </button>
+          </div>
         </div>
+        {resetMessage && (
+          <div className={`mb-4 text-center ${resetError ? 'text-red-500' : 'text-green-600'}`}>{resetMessage}</div>
+        )}
 
         <EstimatesDashboard estimates={allEstimates} />
 

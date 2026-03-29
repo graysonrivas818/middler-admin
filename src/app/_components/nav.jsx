@@ -9,7 +9,6 @@ const Nav = ({
   onChangePassword
 }) => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [showProfileMenu, setShowProfileMenu] = useState(false)
   return (
     <nav className="bg-white dark:bg-gray-800 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,18 +29,15 @@ const Nav = ({
               >
                 Dashboard
               </a>
-              {/* <a
-                href="#"
-                className="text-gray-900 dark:text-gray-300 hover:text-color-3 px-3 py-2 text-sm font-medium"
-              >
-                Users
-              </a>
               <a
                 href="#"
-                className="text-gray-900 dark:text-gray-300 hover:text-color-3 px-3 py-2 text-sm font-medium"
+                className="text-gray-900 dark:text-gray-300 px-3 py-2 text-sm font-medium"
+                onClick={() => {
+                  if (onChangePassword) onChangePassword()
+                }}
               >
-                Settings
-              </a> */}
+                Change Password
+              </a>
               <a
                 className="text-gray-900 px-3 py-2 text-sm font-medium dark:text-gray-300 hover:cursor-pointer"
                 onClick={() => {
@@ -55,34 +51,6 @@ const Nav = ({
             </div>
           </div>
           <div className="flex items-center">
-            {/* Profile Dropdown */}
-            <div className="relative">
-              <button
-                type="button"
-                className="bg-white dark:bg-gray-800 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                onClick={() => setShowProfileMenu((v) => !v)}
-              >
-                <span className="sr-only">Open user menu</span>
-                <img
-                  className="h-8 w-8 rounded-full"
-                  src="/assets/rocket.svg"
-                  alt=""
-                />
-              </button>
-              {showProfileMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50">
-                  <button
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      setShowProfileMenu(false);
-                      if (onChangePassword) onChangePassword();
-                    }}
-                  >
-                    Change Password
-                  </button>
-                </div>
-              )}
-            </div>
             {/* Mobile menu button */}
             <div className="-mr-2 flex items-center sm:hidden">
               <button
@@ -134,20 +102,34 @@ const Nav = ({
             <a
               href="#"
               className="text-gray-900 dark:text-gray-300 hover:bg-gray-100 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium"
+              onClick={() => {
+                dispatch(changeView('dashboard'))
+                setMobileMenuOpen(false)
+              }}
             >
               Dashboard
             </a>
             <a
               href="#"
               className="text-gray-900 dark:text-gray-300 hover:bg-gray-100 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium"
+              onClick={() => {
+                if (onChangePassword) onChangePassword()
+                setMobileMenuOpen(false)
+              }}
             >
-              Users
+              Change Password
             </a>
             <a
               href="#"
               className="text-gray-900 dark:text-gray-300 hover:bg-gray-100 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium"
+              onClick={() => {
+                dispatch(logout())
+                dispatch(resetUser())
+                router.push('/login')
+                setMobileMenuOpen(false)
+              }}
             >
-              Settings
+              Logout
             </a>
           </div>
         </div>

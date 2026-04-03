@@ -4,6 +4,7 @@ export default gql`
 query estimates($token: String!) {
   estimates(token: $token) {
     id,
+    businessEmail,
     clientName,
     clientPhone,
     clientPropertyAddress,

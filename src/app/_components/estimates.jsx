@@ -22,7 +22,7 @@ const headerKeyMap = [
   { label: 'User', key: 'user', width: 'min-w-[140px]' },
   { label: 'Question 1', key: 'where', width: 'min-w-[100px]' },
   { label: 'Question 2', key: 'why', width: 'min-w-[100px]' },
-  { label: 'Email Address', key: 'clientEmail', width: 'min-w-[200px]' },
+  { label: 'Email Address', key: 'displayEmail', width: 'min-w-[200px]' },
 ];
 
 const US_STATES = [
@@ -86,6 +86,7 @@ const Estimates = ({ estimates = [], dispatch, changeView, changePopup, isDarkMo
           parsedState: state,
           totalPrice: totalPrice.toFixed(2),
           user: e.userType ? e.userType : '',
+          displayEmail: e.clientEmail || e.businessEmail || '',
         };
       });
 

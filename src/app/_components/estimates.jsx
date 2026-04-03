@@ -164,8 +164,15 @@ const Estimates = ({ estimates = [], dispatch, changeView, changePopup, isDarkMo
                     </button>
                   </td>
                   {headerKeyMap.map(({ key }, idx) => (
-                    <td key={idx} className="px-4 py-3 text-sm text-gray-800 dark:text-white max-w-[180px] truncate">
-                      <span title={String(estimate[key] ?? '')}>
+                    <td
+                      key={idx}
+                      className={`px-4 py-3 text-sm text-gray-800 dark:text-white ${
+                        key === 'clientPropertyAddress'
+                          ? 'min-w-[200px] whitespace-normal break-words'
+                          : 'max-w-[180px] truncate'
+                      }`}
+                    >
+                      <span title={key !== 'clientPropertyAddress' ? String(estimate[key] ?? '') : undefined}>
                         {key.toLowerCase().includes('date') || key === 'createdAt'
                           ? convertIsoStringToDate(estimate[key])
                           : String(estimate[key] ?? '')}
